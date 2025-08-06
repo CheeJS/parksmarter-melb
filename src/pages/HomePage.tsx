@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react'
 
 const HomeContainer = styled.div`
   max-width: 1200px;
@@ -75,6 +76,26 @@ const FeatureDescription = styled.p`
 `;
 
 const HomePage = () => {
+  useEffect(() => {
+    const mapContainer = document.getElementById('map');
+
+    // Check if map is already initialized
+    if (mapContainer && !(mapContainer as any)._leaflet_id) {
+      const L = (window as any).L;
+
+      const map = L.map('map').setView([-37.8136, 144.9631], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(map);
+
+      L.marker([-37.8136, 144.9631]).addTo(map)
+        .bindPopup('Melbourne CBD')
+        .openPopup();
+    }
+
+  }, []);
+
   return (
     <HomeContainer>
       <Hero>
@@ -85,7 +106,7 @@ const HomePage = () => {
       </Hero>
 
       <MapSection>
-        s
+        <div id="map" style={{ height: '400px', width: '100%' }}></div>
       </MapSection>
 
       <FeaturesGrid>
