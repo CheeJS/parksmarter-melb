@@ -76,25 +76,39 @@ const FeatureDescription = styled.p`
 `;
 
 const HomePage = () => {
-  useEffect(() => {
-    const mapContainer = document.getElementById('map');
+useEffect(() => {
+  const mapContainer = document.getElementById('map');
 
-    // Check if map is already initialized
-    if (mapContainer && !(mapContainer as any)._leaflet_id) {
-      const L = (window as any).L;
+  // ✅ Check if the map is already initialized
+  if (mapContainer && !(mapContainer as any)._leaflet_id) {
+    const L = (window as any).L;
 
-      const map = L.map('map').setView([-37.8136, 144.9631], 13);
+    // Default fallback location
+    const defaultLatLng = [-37.8136, 144.9631];
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-      }).addTo(map);
+    // Initialize map
+    const map = L.map('map').setView(defaultLatLng, 13);
 
-      L.marker([-37.8136, 144.9631]).addTo(map)
-        .bindPopup('Melbourne CBD')
-        .openPopup();
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+    }).addTo(map);
+
+    // Try to get user geolocation
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          map.setView([lat, lng], 15);
+          L.marker([lat, lng]).addTo(map).bindPopup('You are here').openPopup();
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+        }
+      );
     }
-
-  }, []);
+  }
+}, []);
 
   return (
     <HomeContainer>
