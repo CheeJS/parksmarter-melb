@@ -85,8 +85,7 @@ const HomePage = () => {
       </Hero>
 
       <MapSection>
-        {/* Placeholder for Leaflet/Mapbox map */}
-        Map of Melbourne CBD with parking bay overlays will be integrated here
+        s
       </MapSection>
 
       <FeaturesGrid>
